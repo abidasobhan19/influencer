@@ -1,31 +1,41 @@
-import { StyleSheet } from 'react-native';
+import StoryList from '@/components/StoryList';
+import VideoFeed from '@/components/VideoFeed';
+import React, { useState } from 'react';
+import { Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function HomeScreen() {
+  const [videoHeight, setVideoHeight] = useState(0);
 
-export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.contentContainer}>
+        <StoryList />
+        <View
+          style={styles.videoContainer}
+          onLayout={(event) => {
+            const { height } = event.nativeEvent.layout;
+            setVideoHeight(height);
+          }}
+        >
+          {videoHeight > 0 && <VideoFeed height={videoHeight} />}
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#000',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  contentContainer: {
+    flex: 1,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  videoContainer: {
+    flex: 1,
+    backgroundColor: '#000',
   },
 });
